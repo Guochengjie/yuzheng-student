@@ -18,7 +18,7 @@
       <h2>
         Vice President of JD.COM<br />
         and Chief Data Scientist of JD Technology<br />
-        IEEE Fellow, ACM Distinguished Scientist<br />
+        ACM Fellow, IEEE Fellow<br />
       </h2>
       <div class="main-page">
         更多信息请参看他的个人主页：<br>
@@ -156,6 +156,13 @@
       </div>
       <script src="layui\layui.js"></script>
       <script>
+        const CDN_PREFIX = "https://student-cdn.guoch.xyz";
+        const withCdnPrefix = (path, basePath) => {
+          if (!path || !path.startsWith(basePath)) return path;
+          return `${CDN_PREFIX}${path.slice(1)}`;
+        };
+        const withArticlesCdn = (path) => withCdnPrefix(path, "./static/articles/");
+        const withImgsCdn = (path) => withCdnPrefix(path, "./static/imgs/");
         // 封装菜单点击逻辑的函数
         function initMenuNavigation() {
           // 获取所有导航元素和内容区域
@@ -185,7 +192,13 @@
         }
         document.addEventListener("DOMContentLoaded", () => {
           let useOriginalIndex = true; // 控制索引显示模式
-          const data = [
+          const addCdnToItem = (item) => ({
+            ...item,
+            link: withArticlesCdn(item.link),
+            ppt: withArticlesCdn(item.ppt),
+            journalVersion: withArticlesCdn(item.journalVersion),
+          });
+          const rawData = [
             { index: "0-1", username: "what-why-how-why方法论", authors: ["郑宇"], date: "2024", link: "./static/articles/0-0-what-why-how-why方法论.pptx", ppt: "./static/articles/0-0-what-why-how-why方法论.pptx", type: "方法论", langType: 0 },
             { index: "0-2", username: "《数据科学家》", authors: ["郑宇"], date: "2021", extraInfo: "17(12)", page: "43-49", link: "./static/articles/0-1-数据科学家-CCCF-郑宇.pdf", source: "中国计算机学会通讯", type: "期刊论文", langType: 0 },
             { index: "0-3", username: "《城市计算：用大数据和AI驱动智能城市》", authors: ["郑宇"], date: "2018", extraInfo: "14(1)", page: "8-17", link: "./static/articles/0-2-城市计算：用大数据和AI驱动智能城市，中国计算机学会通讯，2018.1.pdf", source: "中国计算机学会通讯", type: "期刊论文", langType: 0 },
@@ -220,6 +233,7 @@
             { index: "5-1", username: "《城市治理一网统管》", authors: ["郑宇"], date: "2022", extraInfo: "47(1)", page: "19-25", link: "./static/articles/5-1. 城市治理一网统管.pdf", source: "武汉大学学报·信息科学版", type: "期刊论文", langType: 0 },
 
           ];
+          const data = rawData.map(addCdnToItem);
           const toolbar = document.getElementById("article-toolbar");
           const articleTab = document.getElementById("nav-article");
           const videoTab = document.getElementById("nav-video");
@@ -507,6 +521,10 @@
             },
           ];
           const MAX_DESCRIPTION_LENGTH = 200; // 限制描述的最大长度
+          const data = rawData.map((item) => ({
+            ...item,
+            thumbnail: withImgsCdn(item.thumbnail),
+          }));
 
           function renderVideos(data) {
             const videoContainer = document.getElementById('video-container');
@@ -569,9 +587,9 @@
             });
           }
           // 对数据按日期倒序排序
-          rawData.sort((a, b) => new Date(b.date) - new Date(a.date));
+          data.sort((a, b) => new Date(b.date) - new Date(a.date));
           // 初始渲染所有视频
-          renderVideos(rawData);
+          renderVideos(data);
         });
         document.addEventListener("DOMContentLoaded", () => {
           const pptData = [
@@ -647,6 +665,14 @@
               ]
             }
           ];
+
+          const data = pptData.map((section) => ({
+            ...section,
+            items: section.items.map((item) => ({
+              ...item,
+              imgLink: withImgsCdn(item.imgLink),
+            })),
+          }));
 
           function renderPPT(data) {
             const pptContainer = document.querySelector(".new ul");
@@ -730,7 +756,7 @@
             });
           }
 
-          renderPPT(pptData);
+          renderPPT(data);
         });
 
 
