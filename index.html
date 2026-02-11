@@ -163,6 +163,7 @@
         };
         const withArticlesCdn = (path) => withCdnPrefix(path, "./static/articles/");
         const withImgsCdn = (path) => withCdnPrefix(path, "./static/imgs/");
+        const withPptCdn = (path) => withCdnPrefix(path, "./static/ppt/");
         // 封装菜单点击逻辑的函数
         function initMenuNavigation() {
           // 获取所有导航元素和内容区域
@@ -671,6 +672,8 @@
             items: section.items.map((item) => ({
               ...item,
               imgLink: withImgsCdn(item.imgLink),
+              link: item.link.map((entry) => withPptCdn(entry)),
+              pptLink: item.pptLink.map((entry) => withPptCdn(entry)),
             })),
           }));
 
